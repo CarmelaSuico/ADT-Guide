@@ -153,7 +153,7 @@ List insertSorted(List L, Person data){
         printf("List is full\n");
     }else{
         int i;
-        for(int i = 0; i < L.count && strcmp(data.LName, L.p[i].LName) < 0 || strcmp(data.FName, L.p[i].FName) < 0; i++){}
+        for(i = 0; i < L.count && (strcmp(data.LName, L.p[i].LName) > 0 || (strcmp(data.LName, L.p[i].LName) == 0 && strcmp(data.FName, L.p[i].FName) > 0)); i++){}
         
         L = insertPos(L, data, i);
     }
