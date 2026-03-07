@@ -38,7 +38,7 @@ int main(){
     int choose, index; Person data;
     
     do{
-        printf("Choose a number:\n1.Insert name at the first position\n2.Insert name at the last position\n3.Insert at specific position\n4.Delete a name at this start\n5.Delete a name at the last\n6.Delete in a specific position\n7.Retrieving a name at a position\n8.Retrieve position using name\n10.Display the List\n11.Empty the List\n0.Exit\n");
+        printf("Choose a number:\n1.Insert name at the first position\n2.Insert name at the last position\n3.Insert at specific position\n4.Delete a name at this start\n5.Delete a name at the last\n6.Delete in a specific position\n7.Retrieving a name at a position\n8.Retrieve position using name\n9.Display the List\n10.Empty the List\n0.Exit\n");
         printf("Enter a number: ");
         scanf("%d", &choose);
         
@@ -73,6 +73,7 @@ int main(){
                 }else{
                     L = deleteStart(L);
                 }
+                
                 printf("\n");
             break;
             case 5:
@@ -117,20 +118,16 @@ int main(){
                     scanf("%s %s", data.FName, data.LName);
                     index = locate(L, data);
                     
-                    if(index != -1){
-                        printf("%s %s is at %d\n", data.FName, data.LName, index);
-                    }else{
-                        printf("%s %s does not exist\n", data.FName, data.LName);
-                    }
+                    index = (index != -1) ? printf("%s %s is at %d\n", data.FName, data.LName, index) : printf("%s %s does not exist\n", data.FName, data.LName);
                 }
                 printf("\n");
             break;
-            case 10:
+            case 9:
                 printf("\nDisplaying the List\n");
                 display(L);
                 printf("\n");
             break;
-            case 11:
+            case 10:
                 printf("\nEmptying the List\n");
                 L = empty(L);
                 printf("\n");
@@ -283,20 +280,14 @@ Person retrieve(List list, int index){
 }
 
 int locate(List list, Person data){
-    int result = -1;
+    Node *trav; int i;
     if(list.head == NULL){
         printf("List is empty\n");
     }else{
-        Node *trav = list.head; int i;
-        for(i = 0; trav != NULL && (strcmp(trav->p.LName, data.LName) != 0 || strcmp(trav->p.FName, data.FName) != 0); i++){ trav = trav->next; }
-        if(trav != NULL){
-            result = i; 
-        }else{
-            result = -1;
-        }
+        for(trav = list.head, i = 0; trav != NULL && (strcmp(trav->p.LName, data.LName) != 0 || strcmp(trav->p.FName, data.FName) != 0);trav = trav->next, i++){}
     }
     
-    return result;
+    return (trav != NULL) ? i : -1;
 }
 
 void display(List list){
