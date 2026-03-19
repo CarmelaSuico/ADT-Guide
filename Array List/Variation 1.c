@@ -10,7 +10,7 @@ typedef struct{
 }Person;
 
 typedef struct{
-    Person p[MAX];
+    Person elem[MAX];
     int count;
 }List;
 
@@ -28,8 +28,9 @@ int main(){
     int choose, position; Person data;
     
     do{
-        printf("Choose a number:\n1.Insert a name in position\n2.Delete a name in position\n3.Locate a name\n4.Insert a name by order\n5.Display the names\n0.Exit\n");
-        printf("Enter a number: ");
+        
+        printf("Enter the choose:\n1.Insert a name in position\n2.Delete a name in a position\n3.Locate a name\n4.Insert a name order\n5.Display names\n0.Exit\n");
+        printf("Enter your choose: ");
         scanf("%d", &choose);
         
         switch(choose){
@@ -39,62 +40,53 @@ int main(){
                 scanf("%s %s", data.FName, data.LName);
                 printf("Enter the position: ");
                 scanf("%d", &position);
+                
                 L = insertPos(L, data, position);
                 printf("\n");
             break;
             case 2:
-                if(L.count == 0){
-                    printf("List is empty\n");
-                }else{
-                    printf("\nDeleting a name in a position\n");
-                    printf("Enter the position: ");
-                    scanf("%d", &position);
-                    L = deletePos(L, position);
-                }
-                
+                printf("\nDeleting a name in a position\n");
+                printf("Enter the position: ");
+                scanf("%d", &position);
+                L = deletePos(L, position);
                 printf("\n");
             break;
             case 3:
-                if(L.count == 0){
-                    printf("List is empty\n");
-                }else{
-                    printf("\nLocating a name\n");
-                    printf("Enter the name(First name Last name): ");
-                    scanf("%s %s", data.FName, data.LName);
-                    position = locate(L, data);
-                    
-                    if(position != -1){
-                        printf("%s %s is in position %d\n", data.FName, data.LName, position);
-                    }else{
-                        printf("%s %s does not exist in the data\n", data.FName, data.LName);
-                    }
-                }
+                printf("\nLocating a name\n");
+                printf("Enter a name(First name Last name): ");
+                scanf("%s %s", data.FName, data.LName);
+                position = locate(L, data); 
                 
+                if(position == 0){
+                    printf("Name %s %s does not exist\n", data.FName, data.LName);
+                }else{
+                    printf("Name %s %s is in position %d\n", data.FName, data.LName, position);
+                }
                 printf("\n");
             break;
             case 4:
-                printf("\nInserting a name by order\n");
+                printf("\nInserting a name in order\n");
                 printf("Enter the name(First name Last name): ");
                 scanf("%s %s", data.FName, data.LName);
                 L = insertSorted(L, data);
+                
                 printf("\n");
             break;
             case 5:
-                if(L.count == 0){
-                    printf("List is empty\n");
-                }else{
-                    printf("\nDisplaying the names:\n");
-                    display(L);
-                    printf("\n");
-                }
+                printf("\nDisplaying names\n");
+                display(L);
+                printf("\n");
             break;
             case 0:
-                printf("Exiting...");            
+                printf("Exiting...\n");
             break;
             default:
-                printf("Invaid Number\n\n");
+                printf("Invlid input\n");
         }
+        
     }while(choose != 0);
+    
+    return 0;
 }
 
 List initialize(List L){
@@ -104,16 +96,15 @@ List initialize(List L){
 
 List insertPos(List L, Person data, int position){
     if(position > L.count){
-        printf("Invalid Position\n");
+        printf("Invalid position\n");
     }else if(L.count == MAX){
         printf("List is full\n");
-    }else{
-        printf("Inserting %s %s in %d\n", data.FName, data.LName, position);
+    }else{  
         for(int i = L.count - 1; i >= position; i--){
-            L.p[i + 1] = L.p[i];
+            L.elem[i + 1] = L.elem[i];
         }
         
-        L.p[position] = data;
+        L.elem[position] = data;
         L.count++;
     }
     
@@ -123,10 +114,11 @@ List insertPos(List L, Person data, int position){
 List deletePos(List L, int position){
     if(position > L.count){
         printf("Invalid position\n");
+    }else if(L.count == 0){
+        printf("List is empty\n");
     }else{
-        printf("Deleting in %d\n",position);
-        for(int i = position; i < L.count - 1; i++){
-            L.p[i] = L.p[i + 1];
+        for(int i = position; i < L.count; i++){
+            L.elem[i] = L.elem[i + 1];
         }
         
         L.count--;
@@ -136,13 +128,13 @@ List deletePos(List L, int position){
 }
 
 int locate(List L, Person data){
-    int i, result;
-    for(i = 0; i < L.count && (strcmp(data.LName, L.p[i].LName) != 0 || strcmp(data.FName, L.p[i].FName) != 0); i++){}
-    
-    if(strcmp(data.LName, L.p[i].LName) == 0 && strcmp(data.FName, L.p[i].FName) == 0){
-        result = i;
+    int result = 0;
+    if(L.count == 0){
+        printf("List is empty\n");
     }else{
-        result = -1;
+        int i;
+        for(i = 0; i < L.count && (strcmp(data.FName, L.elem[i].FName) || strcmp(data.LName, L.elem[i].LName)) != 0; i++){}
+        result = i;
     }
     
     return result;
@@ -153,16 +145,24 @@ List insertSorted(List L, Person data){
         printf("List is full\n");
     }else{
         int i;
-        for(i = 0; i < L.count && (strcmp(data.LName, L.p[i].LName) > 0 || (strcmp(data.LName, L.p[i].LName) == 0 && strcmp(data.FName, L.p[i].FName) > 0)); i++){}
-        
-        L = insertPos(L, data, i);
+        for(i = L.count - 1; i >= 0 && (strcmp(data.LName, L.elem[i].LName) < 0 || (strcmp(data.LName, L.elem[i].LName) == 0 && strcmp(data.FName, L.elem[i].FName) < 0)); i--){
+            L.elem[i + 1] = L.elem[i];
+        }
+    
+        L.elem[i + 1] = data;
+        L.count++;
     }
     
     return L;
 }
 
 void display(List L){
-    for(int i = 0; i < L.count; i++){
-        printf("%d. %s %s\n", i, L.p[i].FName, L.p[i].LName);
+    if(L.count == 0){
+        printf("List is empty\n");
+    }else{
+        for(int i = 0; i < L.count; i++){
+            printf("%d. %s %s\n", i, L.elem[i].FName, L.elem[i].LName);
+        }
     }
+    
 }
