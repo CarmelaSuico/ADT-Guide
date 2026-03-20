@@ -105,7 +105,6 @@ Person pop(Stack* s){
         printf("Stack is empty\n");
     }else{
         Node *temp = s->top;
-        temp->p = s->top->p;
         s->top = temp->next;
         result = temp->p;
         free(temp);
