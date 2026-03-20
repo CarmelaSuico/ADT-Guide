@@ -235,7 +235,7 @@ List deleteLast(List list){
     }else{
         Node *trav, *temp;
         for(trav = list.head; trav->next->next != NULL; trav = trav->next){}
-        temp = trav->next->next;
+        temp = trav->next;
         trav->next = NULL;
         free(temp);
     }
